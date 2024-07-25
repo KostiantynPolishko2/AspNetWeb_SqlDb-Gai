@@ -19,9 +19,11 @@ namespace _20240723_SqlDb_Gai.Controllers
         }
 
         private bool IsDbContext() => _carContext.Database.CanConnect();
-
         private bool IsDbCars() => _carContext.Cars != null ? true : false;
         private bool IsDbMarks() => _carContext.Marks != null ? true : false;
+        private Mark? getMark(string markName) => _carContext.Marks.FirstOrDefault(mark => mark.Name.Equals(markName.ToLower()));
+        private Color? getColor(string colorName) => _carContext.Colors.FirstOrDefault(color => color.Name.Equals(colorName.ToLower()));
+        private Car? getCar(string number) => _carContext.Cars.FirstOrDefault(car => car.Number.Equals(number.ToUpper()));
 
         [HttpGet(Name = "GetCars")]
         public ActionResult<IEnumerable<Car>> Get() {
@@ -48,12 +50,13 @@ namespace _20240723_SqlDb_Gai.Controllers
             if (!IsDbContext()) return Problem("no connection db");
             else if (!IsDbMarks()) return NotFound(new { StatusCode = 400, Message = $"no records for marks" });
 
-            Mark? mark = _carContext.Marks.FirstOrDefault(mark => mark.Name.Equals(markName.ToLower()));
-            Color? color = _carContext.Colors.FirstOrDefault(color => color.Name.Equals(colorName));
+            Mark? mark = getMark(markName);
+            Color? color = getColor(colorName);
+            Car car = new Car(Number, VinCode, Model, Volume) { MarkId = mark?.Id ?? 0, _Mark = mark, ColorId = color?.Id ?? 0, _Color = color };
 
-            if (ModelState.IsValid && mark?.Id != null)
+            if (ModelState.IsValid)
             {
-                _carContext.Cars.Add(new Car(Number, VinCode, Model, Volume) { MarkId = mark.Id, _Mark = mark, ColorId = color.Id, _Color = color });
+                _carContext.Cars.Add(car);
                 _carContext.SaveChanges();
 
                 return Ok(new { StatusCode = 200, Message = "added to db" });
@@ -62,7 +65,29 @@ namespace _20240723_SqlDb_Gai.Controllers
             return BadRequest(new { StatusCode = 400, Message = "model is not valid" });
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpPut(Name = "ModifyCar")]
+        public IActionResult Put([Required] string Number, string? Model, float? Volume,
+            [Required] string markName, [Required] string colorName)
+        {
+            if (!IsDbContext()) return Problem("no connection db");
+            else if (!IsDbMarks()) return NotFound(new { StatusCode = 400, Message = $"no records for marks" });
+
+            Mark? mark = getMark(markName);
+            Color? color = getColor(colorName);
+            Car? car = getCar(Number);
+
+            if (car is not null) {
+                car.Model = Model??car.Model;
+                car.Volume = Volume??car.Volume;
+                car._Mark = mark??car._Mark;
+                car._Color = color??car._Color;
+                _carContext.SaveChanges();
+            }
+
+            return Ok(new { StatusCode = 200, Message = "modified" });
+        }
+
+        [HttpDelete(Name = "DeleteCarId")]
         public ActionResult Delete([Required] int id) {
             if (!IsDbContext()) return Problem("no connection db");
             else if (!IsDbCars()) return NotFound(new { StatusCode = 400, Message = "no records cars" });

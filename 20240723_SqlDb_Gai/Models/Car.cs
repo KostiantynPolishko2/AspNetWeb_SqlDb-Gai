@@ -21,7 +21,6 @@ namespace _20240723_SqlDb_Gai.Models
         [DefaultValue(0)]
         public float Volume { get; set; }
 
-        [Required]
         [JsonIgnore]
         public int MarkId { get; set; }
         [Required]
