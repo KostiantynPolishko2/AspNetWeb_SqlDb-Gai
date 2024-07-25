@@ -47,8 +47,8 @@ namespace _20240723_SqlDb_Gai.Controllers
         public ActionResult<Car> Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume,
             [Required] string markName, [Required] string colorName)
         {
-            if (!IsDbContext()) return Problem("no connection db");
-            else if (!IsDbMarks()) return NotFound(new { StatusCode = 400, Message = $"no records for marks" });
+            if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
+            else if (!IsDbMarks()) return NotFound(new StatusCode(404, $"no records for marks"));
 
             Mark? mark = getMark(markName);
             Color? color = getColor(colorName);
@@ -59,10 +59,10 @@ namespace _20240723_SqlDb_Gai.Controllers
                 _carContext.Cars.Add(car);
                 _carContext.SaveChanges();
 
-                return Ok(new { StatusCode = 200, Message = "added to db" });
+                return Ok(new StatusCode(201, $"{Number} added to db"));
             }
 
-            return BadRequest(new { StatusCode = 400, Message = "model is not valid" });
+            return BadRequest(new StatusCode(400, "model is not valid"));
         }
 
         [HttpPut(Name = "ModifyCar")]

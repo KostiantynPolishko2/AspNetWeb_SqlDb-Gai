@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using _20240723_SqlDb_Gai.Filter;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace _20240723_SqlDb_Gai.Models
@@ -7,10 +8,10 @@ namespace _20240723_SqlDb_Gai.Models
     public class Color
     {
         [Key]
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public int RAL {  get; set; }
-        public string? Type { get; set; }
-        public List<Car> Cars { get; set; } = new();
+        public int Id { get; private set; }
+        public string? Name { get; private set; }
+        public int RAL {  get; private set; }
+        public string? Type { get; private set; }
+        public List<Car> Cars { get; private set; } = new();
     }
 }

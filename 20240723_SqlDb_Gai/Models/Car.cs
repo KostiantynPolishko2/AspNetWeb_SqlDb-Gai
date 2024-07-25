@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using _20240723_SqlDb_Gai.Filter;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace _20240723_SqlDb_Gai.Models
@@ -7,7 +10,7 @@ namespace _20240723_SqlDb_Gai.Models
     public class Car
     {
         [Key]
-        [JsonIgnore]
+        [SwaggerIgnore]
         public int Id { get; set; }
         [Required]
         [DefaultValue(null)]
@@ -21,18 +24,18 @@ namespace _20240723_SqlDb_Gai.Models
         [DefaultValue(0)]
         public float Volume { get; set; }
 
-        [JsonIgnore]
+        [SwaggerIgnore]
         public int MarkId { get; set; }
         [Required]
         [DefaultValue(null)]
-        [JsonIgnore]
+        [SwaggerIgnore]
         public Mark? _Mark { get; set; }
 
-        [JsonIgnore]
+        [SwaggerIgnore]
         public int ColorId { get; set; }
         [Required]
         [DefaultValue(null)]
-        [JsonIgnore]
+        [SwaggerIgnore]
         public Color? _Color { get; set; }
 
         public Car(string? Number, string VinCode, string? Model, float Volume)
