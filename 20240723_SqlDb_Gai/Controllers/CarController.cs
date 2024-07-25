@@ -1,5 +1,6 @@
 ﻿using _20240723_SqlDb_Gai.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System.ComponentModel.DataAnnotations;
 
 namespace _20240723_SqlDb_Gai.Controllers
@@ -20,6 +21,7 @@ namespace _20240723_SqlDb_Gai.Controllers
         private bool IsDbContext() => _carContext.Database.CanConnect();
 
         private bool IsDbCars() => _carContext.Cars != null ? true : false;
+        private bool IsDbMarks() => _carContext.Marks != null ? true : false;
 
         [HttpGet(Name = "GetCars")]
         public ActionResult<IEnumerable<Car>> Get() {
@@ -30,15 +32,20 @@ namespace _20240723_SqlDb_Gai.Controllers
         }
 
         [HttpPost(Name = "AddCar")]
-        public ActionResult<Car> Post(Car car)
+        public ActionResult<Car> Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume, 
+            [Required] string markName)
         {
             if (!IsDbContext()) return Problem("no connection db");
+            else if (!IsDbMarks()) return NotFound(new { StatusCode = 400, Message = $"no records for marks" });
 
-            if (ModelState.IsValid) {
-                _carContext.Cars.Add(car);
+            Mark? mark = _carContext.Marks.FirstOrDefault(mark => mark.Name == markName.ToLower());
+
+            if (ModelState.IsValid && mark?.Id != null )
+            {
+                _carContext.Cars.Add(new Car(Number, VinCode, Model, Volume) { MarkId = mark.Id, _Mark = mark});
                 _carContext.SaveChanges();
 
-                return Ok(new { StatusCode = 200, _car = car, Message = "added to db" });
+                return Ok(new { StatusCode = 200, Message = "added to db" });
             }
 
             return BadRequest(new { StatusCode = 400, Message = "model is not valid" });

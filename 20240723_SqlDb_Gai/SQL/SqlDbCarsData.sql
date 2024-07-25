@@ -1,3 +1,7 @@
 USE [carsdata]
 
-SELECT * FROM [dbo].[Cars];
+SELECT * FROM [dbo].[cars];
+TRUNCATE TABLE [dbo].[cars];
+
+SELECT * FROM [dbo].[marks];
+TRUNCATE TABLE [dbo].[marks];
