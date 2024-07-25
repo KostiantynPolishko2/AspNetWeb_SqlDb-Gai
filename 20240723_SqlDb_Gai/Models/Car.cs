@@ -20,6 +20,7 @@ namespace _20240723_SqlDb_Gai.Models
         [Range(0.01, 6.0, ErrorMessage = "Available value from 0.01 to 6.0")]
         [DefaultValue(0)]
         public float Volume { get; set; }
+
         [Required]
         [JsonIgnore]
         public int MarkId { get; set; }
@@ -27,6 +28,12 @@ namespace _20240723_SqlDb_Gai.Models
         [DefaultValue(null)]
         [JsonIgnore]
         public Mark? _Mark { get; set; }
+
+        public int ColorId { get; set; }
+        [Required]
+        [DefaultValue(null)]
+        [JsonIgnore]
+        public Color? _Color { get; set; }
 
         public Car(string? Number, string VinCode, string? Model, float Volume)
         {

@@ -32,17 +32,22 @@ namespace _20240723_SqlDb_Gai.Controllers
         }
 
         [HttpPost(Name = "AddCar")]
-        public ActionResult<Car> Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume, 
+        //public ActionResult<Car> Post(Car car, [Required] string markName)
+        public ActionResult<Car> Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume,
             [Required] string markName)
         {
             if (!IsDbContext()) return Problem("no connection db");
             else if (!IsDbMarks()) return NotFound(new { StatusCode = 400, Message = $"no records for marks" });
 
             Mark? mark = _carContext.Marks.FirstOrDefault(mark => mark.Name == markName.ToLower());
+            //car.MarkId = mark?.Id != null ? mark.Id : 0;
+            //car._Mark = mark;
 
-            if (ModelState.IsValid && mark?.Id != null )
+            if (ModelState.IsValid && mark?.Id != null)
+            //if (ModelState.IsValid)
             {
-                _carContext.Cars.Add(new Car(Number, VinCode, Model, Volume) { MarkId = mark.Id, _Mark = mark});
+                _carContext.Cars.Add(new Car(Number, VinCode, Model, Volume) { MarkId = mark.Id, _Mark = mark });
+                //_carContext.Cars.Add(car);
                 _carContext.SaveChanges();
 
                 return Ok(new { StatusCode = 200, Message = "added to db" });
