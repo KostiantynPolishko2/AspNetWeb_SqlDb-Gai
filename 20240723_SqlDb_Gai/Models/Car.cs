@@ -29,6 +29,7 @@ namespace _20240723_SqlDb_Gai.Models
         [JsonIgnore]
         public Mark? _Mark { get; set; }
 
+        [JsonIgnore]
         public int ColorId { get; set; }
         [Required]
         [DefaultValue(null)]

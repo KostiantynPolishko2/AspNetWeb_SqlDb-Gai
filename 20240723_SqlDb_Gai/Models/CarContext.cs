@@ -6,7 +6,7 @@ namespace _20240723_SqlDb_Gai.Models
     {
         public DbSet<Car> Cars { get; set; } = null!;
         public DbSet<Mark> Marks { get; set; } = null!;
-        public DbSet<Mark> Colors { get; set; } = null!;
+        public DbSet<Color> Colors { get; set; } = null!;
         public CarContext(DbContextOptions<CarContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
