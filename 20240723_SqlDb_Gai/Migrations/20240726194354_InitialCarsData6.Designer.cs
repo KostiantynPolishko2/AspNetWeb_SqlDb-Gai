@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _20240723_SqlDb_Gai.Models;
 
@@ -10,9 +11,11 @@ using _20240723_SqlDb_Gai.Models;
 namespace _20240723_SqlDb_Gai.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20240726194354_InitialCarsData6")]
+    partial class InitialCarsData6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,8 +33,7 @@ namespace _20240723_SqlDb_Gai.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ColorId")
-                        .HasColumnType("int")
-                        .HasColumnName("FK_ColorId");
+                        .HasColumnType("int");
 
                     b.Property<int>("MarkId")
                         .HasColumnType("int")
@@ -69,10 +71,7 @@ namespace _20240723_SqlDb_Gai.Migrations
                         .IsUnique()
                         .HasDatabaseName("IndexNumber");
 
-                    b.ToTable("cars", null, t =>
-                        {
-                            t.HasCheckConstraint("ValidVolume", "Volume > 0 AND Volume <= 6");
-                        });
+                    b.ToTable("cars", (string)null);
                 });
 
             modelBuilder.Entity("_20240723_SqlDb_Gai.Models.Color", b =>

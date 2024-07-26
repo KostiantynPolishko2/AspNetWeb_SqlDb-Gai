@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using _20240723_SqlDb_Gai.Configurations;
 
 namespace _20240723_SqlDb_Gai.Models
 {
@@ -11,9 +12,11 @@ namespace _20240723_SqlDb_Gai.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Car>().ToTable("cars");
-            modelBuilder.Entity<Mark>().ToTable("marks");
-            modelBuilder.Entity<Color>().ToTable("colors");
+            modelBuilder.ApplyConfiguration(new CarConfuguration());
+            modelBuilder.ApplyConfiguration(new MarkConfuguration());
+            modelBuilder.ApplyConfiguration(new ColorConfuguration());
+
+            modelBuilder.Ignore<CarMarkPaint>();
         }
     }
 }
