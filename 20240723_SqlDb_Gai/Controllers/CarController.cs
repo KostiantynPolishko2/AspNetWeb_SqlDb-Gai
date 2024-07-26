@@ -1,5 +1,6 @@
 ﻿using _20240723_SqlDb_Gai.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,9 +22,11 @@ namespace _20240723_SqlDb_Gai.Controllers
         private bool IsDbContext() => _carContext.Database.CanConnect();
         private bool IsDbCars() => _carContext.Cars != null ? true : false;
         private bool IsDbMarks() => _carContext.Marks != null ? true : false;
-        private Mark? getMark(string markName) => _carContext.Marks.FirstOrDefault(mark => mark.Name.Equals(markName.ToLower()));
-        private Color? getColor(string colorName) => _carContext.Colors.FirstOrDefault(color => color.Name.Equals(colorName.ToLower()));
-        private Car? getCar(string number) => _carContext.Cars.FirstOrDefault(car => car.Number.Equals(number.ToUpper()));
+        private Mark? getMark(string markName) => _carContext.Marks.FirstOrDefault(mark => mark.Name!.Equals(markName.ToLower()));
+        private Color? getColor(string colorName) => _carContext.Colors.FirstOrDefault(color => color.Name!.Equals(colorName.ToLower()));
+        private Car? getCar(string number) => _carContext.Cars.FirstOrDefault(car => car.Number!.Equals(number.ToUpper()));
+
+        private static float getPaintThk(float minThk, float maxThk) => (minThk + maxThk) / 2;
 
         [HttpGet(Name = "GetCars")]
         public ActionResult<IEnumerable<Car>> Get() {
@@ -33,15 +36,39 @@ namespace _20240723_SqlDb_Gai.Controllers
             return _carContext.Cars.ToList();
         }
 
-        [HttpGet("{Number}")]
+        [HttpGet("Number/{Number}", Name = "GetByNumber")]
         public ActionResult<Car> Get([Required] string Number) {
             if (!IsDbContext()) return Problem("no connection db");
             else if (!IsDbCars()) return NotFound(new { StatusCode = 400, Message = "no records cars" });
 
-            Car? car = _carContext.Cars.ToList().Find(car => car.Number.Equals(Number.ToUpper()));
+            Car? car = _carContext.Cars.ToList().Find(car => car.Number!.Equals(Number.ToUpper()));
 
             return  car != null ? car : BadRequest(new { StatusCode = 400, Message = $"{Number} model is absent in db" });
         }
+
+        [HttpGet("Mark/{Mark}", Name = "GetByMark")]
+        public ActionResult<IEnumerable<CarMarkPaint>> GetCarMarkPaint([Required] string Mark)
+        {
+            if (!IsDbContext()) return Problem("no connection db");
+            else if (!IsDbCars()) return NotFound(new { StatusCode = 400, Message = "no records cars" });
+
+            try
+            {
+                IEnumerable<CarMarkPaint> cars = (from car in _carContext.Cars.Include(car => car._Mark).Include(car => car._Color)
+                                                  where car._Mark!.Name!.Equals(Mark.ToLower())
+                                                  select
+                                                  new CarMarkPaint(car.Number!,
+                                                      car._Mark!.Name!, car.Model!,
+                                                      getPaintThk(car._Mark.PaintThkMin, car._Mark.PaintThkMax),
+                                                      car._Color!.RAL,
+                                                      car._Color!.Type!));
+                return Ok(cars);
+            }
+            catch (Exception ex) {
+                return NotFound(new StatusCode(404, $"mark {Mark} is absent in db"));
+            }
+        }
+
 
         [HttpPost(Name = "AddCar")]
         public ActionResult<Car> Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume,
