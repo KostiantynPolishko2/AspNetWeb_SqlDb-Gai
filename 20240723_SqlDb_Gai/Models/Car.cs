@@ -1,4 +1,5 @@
 ﻿using _20240723_SqlDb_Gai.Filter;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace _20240723_SqlDb_Gai.Models
@@ -7,7 +8,7 @@ namespace _20240723_SqlDb_Gai.Models
     {
         [SwaggerIgnore]
         public int Id { get; set; }
-        [RegularExpression(@"^[a-zA-Z]{2}\d{4}[a-zA-Z]{2}$")]
+        [RegularExpression(@"^[a-zA-Z]{2}\d{4}[a-zA-Z]{2}$", ErrorMessage = "uncorrect format")]
         public string Number { get; set; }
         public string? VinCode { get; set; }
         public string Model { get; set; }
@@ -17,12 +18,14 @@ namespace _20240723_SqlDb_Gai.Models
         [SwaggerIgnore]
         public int MarkId { get; set; }
         [SwaggerIgnore]
-        public Mark? _Mark { get; set; }
+        [Required]
+        public Mark _Mark { get; set; } = null!;
 
         [SwaggerIgnore]
         public int ColorId { get; set; }
         [SwaggerIgnore]
-        public Color? _Color { get; set; }
+        [Required]
+        public Color _Color { get; set; } = null!;
 
         public Car(string? Number, string VinCode, string? Model, float Volume)
         {

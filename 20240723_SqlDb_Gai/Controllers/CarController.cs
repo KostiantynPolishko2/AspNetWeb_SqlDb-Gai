@@ -29,12 +29,12 @@ namespace _20240723_SqlDb_Gai.Controllers
         private static float getPaintThk(float minThk, float maxThk) => (minThk + maxThk) / 2;
         private bool isNumber(string number) => Regex.IsMatch(number, patternNumber, RegexOptions.IgnoreCase);
 
-        private IActionResult isSaveToDb()
+        private IActionResult isSaveToDb(string msg = "db saved")
         {
             try
             {
                 _carContext.SaveChanges();
-                return Ok("db saved");
+                return Ok(new StatusCode(200, msg));
             }
             catch(Exception ex)
             {
@@ -79,7 +79,7 @@ namespace _20240723_SqlDb_Gai.Controllers
                 return Ok(cars);
             }
             catch (Exception ex) {
-                return NotFound(new StatusCode(404, $"mark {Mark} is absent in db"));
+                return NotFound(new StatusCode(404, $"{ex.InnerException!.Message.ToString()}"));
             }
         }
 
@@ -88,62 +88,64 @@ namespace _20240723_SqlDb_Gai.Controllers
         public IActionResult Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume,
             [Required] string markName, [Required] string colorName)
         {
-            if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
+            if (!isNumber(Number)) return BadRequest(new StatusCode(400, $"uncorrect format {Number}"));
+            else if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
             else if (!IsDbMarks()) return NotFound(new StatusCode(404, $"no records for marks"));
 
             Mark? mark = getMark(markName);
             Color? color = getColor(colorName);
             Car car = new Car(Number, VinCode, Model, Volume) { MarkId = mark?.Id ?? 0, _Mark = mark, ColorId = color?.Id ?? 0, _Color = color };
 
-            if (!isNumber(Number))
-            {
-                return BadRequest(new StatusCode(400, $"uncorrect format {Number}"));
-            }
-            else if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 BadRequest(new StatusCode(400, "model is not valid"));
             }
 
             _carContext.Cars.Add(car);
-            return isSaveToDb();
+            return isSaveToDb($"{Number} is added to db");
         }
 
         [HttpPut(Name = "ModifyCar")]
         public IActionResult Put([Required] string Number, string? Model, float? Volume,
             [Required] string markName, [Required] string colorName)
         {
-            if (!IsDbContext()) return Problem("no connection db");
+            if (!isNumber(Number)) return BadRequest(new StatusCode(400, $"uncorrect format {Number}"));
+            else if (!IsDbContext()) return Problem("no connection db");
             else if (!IsDbMarks()) return NotFound(new { StatusCode = 400, Message = $"no records for marks" });
+
+
+            Car? car = getCar(Number);
+            if (car is null) {
+                return NotFound(new StatusCode(404, $"no instance by {Number}"));
+            }
 
             Mark? mark = getMark(markName);
             Color? color = getColor(colorName);
-            Car? car = getCar(Number);
 
-            if (car is not null) {
-                car.Model = Model??car.Model;
-                car.Volume = Volume??car.Volume;
-                car._Mark = mark??car._Mark;
-                car._Color = color??car._Color;
-                _carContext.SaveChanges();
-            }
+            if(mark is null || color is null) return BadRequest(new StatusCode(400, "model of entity is not valid"));
 
-            return Ok(new { StatusCode = 200, Message = "modified" });
+            car!.Model = Model ?? car.Model;
+            car.Volume = Volume ?? car.Volume;
+            car._Mark = mark!;
+            car._Color = color!;
+
+            return isSaveToDb($"{Number} is modified in db");
         }
 
         [HttpDelete(Name = "DeleteCarId")]
-        public ActionResult Delete([Required] int id) {
-            if (!IsDbContext()) return Problem("no connection db");
+        public IActionResult Delete([Required] string number) {
+
+            if (!isNumber(number)) return BadRequest(new StatusCode(400, $"uncorrect format {number}"));
+            else if (!IsDbContext()) return Problem("no connection db");
             else if (!IsDbCars()) return NotFound(new { StatusCode = 400, Message = "no records cars" });
 
-            id = Math.Abs(id);
-            Car? car = _carContext.Cars.FirstOrDefault(x => x.Id == id);
-            if (car != null) { 
-                _carContext.Cars.Remove(car);
-                _carContext.SaveChanges();
-                return Ok(new { StatusCode = 200, _car = car, Message = "deleted" });
+            Car? car = _carContext.Cars.FirstOrDefault(x => x.Number.Equals(number.ToUpper()));
+            if (car == null) {
+                return NotFound(new StatusCode(404, $"{number} is absent entity in db"));
             }
 
-            return NotFound(new { StatusCode = 404, _carId = id, Message = "not found" });
+            _carContext.Cars.Remove(car!);         
+            return isSaveToDb($"{number} entity is deleted from db");           
         }
     }
 }
