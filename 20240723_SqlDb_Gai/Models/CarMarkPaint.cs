@@ -1,6 +1,9 @@
 ﻿
 namespace _20240723_SqlDb_Gai.Models
 {
+    /// <summary>
+    /// entity that summarizes dates from Car, Mark, Color
+    /// </summary>
     public class CarMarkPaint
     {
         public string number { get; set; } = null!;

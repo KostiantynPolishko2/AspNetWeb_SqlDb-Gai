@@ -4,10 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace _20240723_SqlDb_Gai.Models
 {
+    /// <summary>
+    /// main entity that depends from Mark and Color
+    /// </summary>
     public class Car
     {
         [SwaggerIgnore]
         public int Id { get; set; }
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Neccessary registration number")]
         [RegularExpression(@"^[a-zA-Z]{2}\d{4}[a-zA-Z]{2}$", ErrorMessage = "uncorrect format")]
         public string Number { get; set; }
         public string? VinCode { get; set; }

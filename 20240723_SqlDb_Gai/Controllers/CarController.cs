@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace _20240723_SqlDb_Gai.Controllers
 {
+
     [ApiController]
     [Route("api/[controller]")]
     public class CarController : ControllerBase
@@ -42,29 +43,64 @@ namespace _20240723_SqlDb_Gai.Controllers
             }
         }
 
+        /// <summary>
+        /// Get &lt;Cars> from db
+        /// </summary>
+        /// <returns></returns>
+        /// <responce code="200">Successful request fulfillment</responce>
+        /// <responce code="404">Failed request: No records in table cars of SqlDb carsdata</responce>
+        /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         [HttpGet(Name = "GetCars")]
+        [ProducesResponseType(typeof(IEnumerable<Car>), 200)]
+        [ProducesResponseType(typeof(StatusCode), 404)]
+        [ProducesResponseType(typeof(StatusCode), 409)]
         public ActionResult<IEnumerable<Car>> Get() {
-            if (!IsDbContext()) return Problem("no connection db");
-            else if (!IsDbCars()) return NotFound(new { StatusCode = 400, Message = "no records cars" });
+            if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
+            else if (!IsDbCars()) return NotFound(new StatusCode(404, $"no records for cars"));
 
-            return _carContext.Cars.ToList();
+            return Ok(_carContext.Cars);
         }
 
+        /// <summary>
+        /// Get instance of Car by its number
+        /// </summary>
+        /// <param name="Number">Registration Number: AE4000IT</param>
+        /// <returns></returns>
+        /// <responce code="200">Successful request fulfillment</responce>
+        /// <responce code="400">Failed request: Uncorrect format of number inputed</responce>
+        /// <responce code="404">Failed request: No records in table cars of SqlDb carsdata</responce>
+        /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         [HttpGet("Number/{Number}", Name = "GetByNumber")]
+        [ProducesResponseType(typeof(Car), 200)]
+        [ProducesResponseType(typeof(StatusCode), 400)]
+        [ProducesResponseType(typeof(StatusCode), 404)]
+        [ProducesResponseType(typeof(StatusCode), 409)]
         public ActionResult<Car> Get([Required] string Number) {
-            if (!IsDbContext()) return Problem("no connection db");
-            else if (!IsDbCars()) return NotFound(new { StatusCode = 400, Message = "no records cars" });
+            if (!isNumber(Number)) return BadRequest(new StatusCode(400, $"uncorrect format {Number}"));
+            else if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
+            else if (!IsDbCars()) return NotFound(new StatusCode(404, $"no records for cars"));
 
             Car? car = _carContext.Cars.ToList().Find(car => car.Number!.Equals(Number.ToUpper()));
 
-            return  car != null ? car : BadRequest(new { StatusCode = 400, Message = $"{Number} model is absent in db" });
+            return  car != null ? car : BadRequest(new StatusCode(400, $"{Number} model is absent in db"));
         }
 
+        /// <summary>
+        /// Get IEnumarable&lt;Car> by it mark
+        /// </summary>
+        /// <param name="Mark">Car Mark: bmw</param>
+        /// <returns></returns>
+        /// <responce code="200">Successful request fulfillment</responce>
+        /// <responce code="404">Failed request: Not found data</responce>
+        /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         [HttpGet("Mark/{Mark}", Name = "GetByMark")]
+        [ProducesResponseType(typeof(IEnumerable<CarMarkPaint>), 200)]
+        [ProducesResponseType(typeof(StatusCode), 404)]
+        [ProducesResponseType(typeof(StatusCode), 409)]
         public ActionResult<IEnumerable<CarMarkPaint>> GetCarMarkPaint([Required] string Mark)
         {
-            if (!IsDbContext()) return Problem("no connection db");
-            else if (!IsDbCars()) return NotFound(new { StatusCode = 400, Message = "no records cars" });
+            if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
+            else if (!IsDbCars()) return NotFound(new StatusCode(404, $"no records for cars"));
 
             try
             {
