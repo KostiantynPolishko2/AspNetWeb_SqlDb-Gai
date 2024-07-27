@@ -32,6 +32,7 @@
             <returns></returns>
             <responce code="200">Successful request fulfillment</responce>
             <responce code="404">Failed request: Not found data</responce>
+            <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>
         <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData">
             <inheritdoc />
