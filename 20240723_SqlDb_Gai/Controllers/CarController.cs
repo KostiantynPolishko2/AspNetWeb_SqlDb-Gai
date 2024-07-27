@@ -1,8 +1,8 @@
 ﻿using _20240723_SqlDb_Gai.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace _20240723_SqlDb_Gai.Controllers
 {
@@ -10,6 +10,7 @@ namespace _20240723_SqlDb_Gai.Controllers
     [Route("api/[controller]")]
     public class CarController : ControllerBase
     {
+        private const string patternNumber = @"^[A-Z]{2}\d{4}[A-Z]{2}$";
         private readonly CarContext _carContext;
         private readonly ILogger<CarController> _logger;
 
@@ -25,8 +26,21 @@ namespace _20240723_SqlDb_Gai.Controllers
         private Mark? getMark(string markName) => _carContext.Marks.FirstOrDefault(mark => mark.Name!.Equals(markName.ToLower()));
         private Color? getColor(string colorName) => _carContext.Colors.FirstOrDefault(color => color.Name!.Equals(colorName.ToLower()));
         private Car? getCar(string number) => _carContext.Cars.FirstOrDefault(car => car.Number!.Equals(number.ToUpper()));
-
         private static float getPaintThk(float minThk, float maxThk) => (minThk + maxThk) / 2;
+        private bool isNumber(string number) => Regex.IsMatch(number, patternNumber, RegexOptions.IgnoreCase);
+
+        private IActionResult isSaveToDb()
+        {
+            try
+            {
+                _carContext.SaveChanges();
+                return Ok("db saved");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new StatusCode(400, $"{ex.InnerException!.Message.ToString()}"));
+            }
+        }
 
         [HttpGet(Name = "GetCars")]
         public ActionResult<IEnumerable<Car>> Get() {
@@ -71,7 +85,7 @@ namespace _20240723_SqlDb_Gai.Controllers
 
 
         [HttpPost(Name = "AddCar")]
-        public ActionResult<Car> Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume,
+        public IActionResult Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume,
             [Required] string markName, [Required] string colorName)
         {
             if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
@@ -81,15 +95,17 @@ namespace _20240723_SqlDb_Gai.Controllers
             Color? color = getColor(colorName);
             Car car = new Car(Number, VinCode, Model, Volume) { MarkId = mark?.Id ?? 0, _Mark = mark, ColorId = color?.Id ?? 0, _Color = color };
 
-            if (ModelState.IsValid)
+            if (!isNumber(Number))
             {
-                _carContext.Cars.Add(car);
-                _carContext.SaveChanges();
-
-                return Ok(new StatusCode(201, $"{Number} added to db"));
+                return BadRequest(new StatusCode(400, $"uncorrect format {Number}"));
+            }
+            else if (!ModelState.IsValid)
+            {
+                BadRequest(new StatusCode(400, "model is not valid"));
             }
 
-            return BadRequest(new StatusCode(400, "model is not valid"));
+            _carContext.Cars.Add(car);
+            return isSaveToDb();
         }
 
         [HttpPut(Name = "ModifyCar")]

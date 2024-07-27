@@ -1,11 +1,5 @@
 ﻿using _20240723_SqlDb_Gai.Filter;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 
 namespace _20240723_SqlDb_Gai.Models
 {
@@ -13,6 +7,7 @@ namespace _20240723_SqlDb_Gai.Models
     {
         [SwaggerIgnore]
         public int Id { get; set; }
+        [RegularExpression(@"^[a-zA-Z]{2}\d{4}[a-zA-Z]{2}$")]
         public string Number { get; set; }
         public string? VinCode { get; set; }
         public string Model { get; set; }

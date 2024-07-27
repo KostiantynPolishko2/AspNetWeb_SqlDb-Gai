@@ -1,9 +1,6 @@
-﻿using _20240723_SqlDb_Gai.Filter;
-using System.ComponentModel.DataAnnotations.Schema;
-
+﻿
 namespace _20240723_SqlDb_Gai.Models
 {
-    //[NotMapped]
     public class CarMarkPaint
     {
         public string number { get; set; } = null!;

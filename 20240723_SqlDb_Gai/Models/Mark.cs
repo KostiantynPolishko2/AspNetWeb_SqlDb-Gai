@@ -1,6 +1,4 @@
-﻿using _20240723_SqlDb_Gai.Filter;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace _20240723_SqlDb_Gai.Models
 {
