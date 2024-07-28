@@ -6,7 +6,6 @@ using _20240723_SqlDb_Gai.Filter;
 using _20240723_SqlDb_Gai.Models;
 using _20240723_SqlDb_Gai.Swagger;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
