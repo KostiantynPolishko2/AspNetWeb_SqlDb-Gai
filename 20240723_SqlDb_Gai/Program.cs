@@ -1,40 +1,51 @@
 using _20240723_SqlDb_Gai.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
 using _20240723_SqlDb_Gai.Filter;
+using Asp.Versioning;
+using _20240723_SqlDb_Gai.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.Extensions.Options;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddDbContext<CarContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDbConnection")));
+builder.Services.AddDbContext<CarContext>(configure => configure.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDbConnection")));
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(configure =>
 {
-    configure.SwaggerDoc("v2", new OpenApiInfo { 
-        Version = "v2",
-        Title = "CarApi", 
-        Description = "Api request to db cars",
-        Contact = new OpenApiContact
-        { 
-            Name = "KostiantynPolishko",
-            Email = "polxs_wp31@student.itstep.org",
-            Url = new Uri("https://habr.com/ru/companies/simbirsoft/articles/707108/")
-        },
-        License = new OpenApiLicense
-        {
-            Name = "ApiITSTEP",
-            Url = new Uri("https://mystat.itstep.org/")
-        }
-    });
+    //Add a custom operation filter which sets default values
+    configure.OperationFilter<SwaggerDefaultValues>();
+
+    //Connected attribute [SwaggerIgnore] to hide requested fields from SwaggerUI
     configure.SchemaFilter<SwaggerSkipPropertyFilter>();
+
+    //Connected service of display comments in SwaggerUI. Comments done in XML format inside code.
     string basePath = AppContext.BaseDirectory;
     string xmlPath = Path.Combine(basePath, "CarApi.xml");
     configure.IncludeXmlComments(xmlPath);
+});
+
+//Add services of versioning in Swagger
+builder.Services.AddApiVersioning(configure =>
+{
+    configure.DefaultApiVersion = new ApiVersion(1, 0);
+    configure.AssumeDefaultVersionWhenUnspecified = true;
+    configure.ReportApiVersions = true;
+    configure.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
+
+builder.Services.AddApiVersioning().AddApiExplorer(configure =>
+{
+    configure.GroupNameFormat = "'v'VVV";
+    configure.SubstituteApiVersionInUrl = true;
 });
 
 var app = builder.Build();
@@ -43,7 +54,20 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v2/swagger.json", "v2"); });
+    app.UseSwaggerUI(configure => { 
+        configure.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+
+        var descriptions = app.DescribeApiVersions();
+
+        //Build a swagger endpoint for each dicovered API version
+        foreach(var desctiption in descriptions)
+        {
+            var url = $"/swagger/{desctiption.GroupName}/swagger.json";
+            var name = desctiption.GroupName.ToUpperInvariant();
+            configure.SwaggerEndpoint(url, name);
+        }
+    });
+
     app.UseMvc(routes =>
     {
         routes.MapRoute(

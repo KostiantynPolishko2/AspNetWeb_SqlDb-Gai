@@ -1,5 +1,6 @@
 ﻿using _20240723_SqlDb_Gai.Models;
 using _20240723_SqlDb_Gai.Models.Exceptions;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -7,9 +8,10 @@ using System.Text.RegularExpressions;
 
 namespace _20240723_SqlDb_Gai.Controllers
 {
-
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [Route("api/[controller]")]
     public class CarController : ControllerBase
     {
         private const string patternNumber = @"^[A-Z]{2}\d{4}[A-Z]{2}$";
@@ -51,6 +53,7 @@ namespace _20240723_SqlDb_Gai.Controllers
         /// <responce code="200">Successful request fulfillment</responce>
         /// <responce code="404">Failed request: No records in table cars of SqlDb carsdata</responce>
         /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
+        [MapToApiVersion("1.0")]
         [HttpGet(Name = "GetCars")]
         [ProducesResponseType(typeof(IEnumerable<Car>), 200)]
         [ProducesResponseType(typeof(StatusCode), 404)]
@@ -71,6 +74,7 @@ namespace _20240723_SqlDb_Gai.Controllers
         /// <responce code="400">Failed request: Uncorrect format of number inputed</responce>
         /// <responce code="404">Failed request: No records in table cars of SqlDb carsdata</responce>
         /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
+        [MapToApiVersion("1.0")]
         [HttpGet("Number/{Number}", Name = "GetByNumber")]
         [ProducesResponseType(typeof(Car), 200)]
         [ProducesResponseType(typeof(StatusCode400), 400)]
@@ -94,6 +98,7 @@ namespace _20240723_SqlDb_Gai.Controllers
         /// <responce code="200">Successful request fulfillment</responce>
         /// <responce code="404">Failed request: Not found data</responce>
         /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
+        [MapToApiVersion("2.0")]
         [HttpGet("Mark/{Mark}", Name = "GetByMark")]
         [ProducesResponseType(typeof(IEnumerable<CarMarkPaint>), 200)]
         [ProducesResponseType(typeof(StatusCode404), 404)]
@@ -120,7 +125,7 @@ namespace _20240723_SqlDb_Gai.Controllers
             }
         }
 
-
+        [MapToApiVersion("2.0")]
         [HttpPost(Name = "AddCar")]
         public IActionResult Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume,
             [Required] string markName, [Required] string colorName)
@@ -142,6 +147,7 @@ namespace _20240723_SqlDb_Gai.Controllers
             return isSaveToDb($"{Number} is added to db");
         }
 
+        [MapToApiVersion("2.0")]
         [HttpPut(Name = "ModifyCar")]
         public IActionResult Put([Required] string Number, string? Model, float? Volume,
             [Required] string markName, [Required] string colorName)
@@ -169,6 +175,7 @@ namespace _20240723_SqlDb_Gai.Controllers
             return isSaveToDb($"{Number} is modified in db");
         }
 
+        [MapToApiVersion("1.0")]
         [HttpDelete(Name = "DeleteCarId")]
         public IActionResult Delete([Required] string number) {
 

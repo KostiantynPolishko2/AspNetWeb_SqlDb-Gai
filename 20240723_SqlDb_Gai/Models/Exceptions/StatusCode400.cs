@@ -1,5 +1,10 @@
-﻿namespace _20240723_SqlDb_Gai.Models.Exceptions
+﻿using _20240723_SqlDb_Gai.Filter;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace _20240723_SqlDb_Gai.Models.Exceptions
 {
+    [NotMapped]
+    [SwaggerIgnore]
     public class StatusCode400 : StatusCode
     {
         public StatusCode400() : base(400, "inputed uncorrect format") { }

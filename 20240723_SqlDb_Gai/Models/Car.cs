@@ -1,5 +1,4 @@
 ﻿using _20240723_SqlDb_Gai.Filter;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace _20240723_SqlDb_Gai.Models
