@@ -76,6 +76,24 @@
             <responce code="404">Failed request: Not found data</responce>
             <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>
+        <member name="M:_20240723_SqlDb_Gai.Controllers.MarkColorController.GetMarks">
+            <summary>
+            Get list of name marks car from db
+            </summary>
+            <returns></returns>
+            <responce code="200">Successful request fulfillment</responce>
+            <responce code="404">Failed request: Not found data</responce>
+            <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
+        </member>
+        <member name="M:_20240723_SqlDb_Gai.Controllers.MarkColorController.GetColors">
+            <summary>
+            Get list of name colors car from db
+            </summary>
+            <returns></returns>
+            <responce code="200">Successful request fulfillment</responce>
+            <responce code="404">Failed request: Not found data</responce>
+            <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
+        </member>
         <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData">
             <inheritdoc />
         </member>
