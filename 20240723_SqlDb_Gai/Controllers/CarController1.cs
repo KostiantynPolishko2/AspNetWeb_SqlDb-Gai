@@ -9,10 +9,9 @@ using System.Text.RegularExpressions;
 namespace _20240723_SqlDb_Gai.Controllers
 {
     [ApiVersion("1.0")]
-    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class CarController : ControllerBase
+    public partial class CarController : ControllerBase
     {
         private const string patternNumber = @"^[A-Z]{2}\d{4}[A-Z]{2}$";
         private readonly CarContext _carContext;
@@ -85,98 +84,30 @@ namespace _20240723_SqlDb_Gai.Controllers
             else if (!IsDbContext()) return Conflict(new StatusCode409());
             else if (!IsDbCars()) return NotFound(new StatusCode404());
 
-            Car? car = _carContext.Cars.ToList().Find(car => car.Number!.Equals(Number.ToUpper()));
+            Car? car = _carContext.Cars.FirstOrDefault(car => car.Number!.Equals(Number.ToUpper()));
+
+            //IEnumerable<Car> cars = (from car in _carContext.Cars.Include(c => c._Mark).Include(c => c._Color)
+            //            where car.Number.Equals(Number.ToUpper())
+            //            select new Car(car, car._Mark, car._Color));
 
             return  car != null ? Ok(car) : BadRequest(new StatusCode400( $"{Number} model is absent in db"));
         }
 
         /// <summary>
-        /// Get IEnumarable&lt;Car> by it mark
+        /// Delete from db entity Car by registration Number
         /// </summary>
-        /// <param name="Mark">Car Mark: bmw</param>
+        /// <param name="number">Registration Number: AE4000IT</param>
         /// <returns></returns>
         /// <responce code="200">Successful request fulfillment</responce>
+        /// <responce code="400">Failed request: Uncorrect format of number inputed</responce>
         /// <responce code="404">Failed request: Not found data</responce>
         /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
-        [MapToApiVersion("2.0")]
-        [HttpGet("Mark/{Mark}", Name = "GetByMark")]
-        [ProducesResponseType(typeof(IEnumerable<CarMarkPaint>), 200)]
-        [ProducesResponseType(typeof(StatusCode404), 404)]
-        [ProducesResponseType(typeof(StatusCode409), 409)]
-        public ActionResult<IEnumerable<CarMarkPaint>> GetCarMarkPaint([Required] string Mark)
-        {
-            if (!IsDbContext()) return Conflict(new StatusCode409());
-            else if (!IsDbCars()) return NotFound(new StatusCode404());
-
-            try
-            {
-                IEnumerable<CarMarkPaint> cars = (from car in _carContext.Cars.Include(car => car._Mark).Include(car => car._Color)
-                                                  where car._Mark!.Name!.Equals(Mark.ToLower())
-                                                  select
-                                                  new CarMarkPaint(car.Number!,
-                                                      car._Mark!.Name!, car.Model!,
-                                                      getPaintThk(car._Mark.PaintThkMin, car._Mark.PaintThkMax),
-                                                      car._Color!.RAL,
-                                                      car._Color!.Type!));
-                return Ok(cars);
-            }
-            catch (Exception ex) {
-                return NotFound(new StatusCode404($"{ex.InnerException!.Message.ToString()}"));
-            }
-        }
-
-        [MapToApiVersion("2.0")]
-        [HttpPost(Name = "AddCar")]
-        public IActionResult Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume,
-            [Required] string markName, [Required] string colorName)
-        {
-            if (!isNumber(Number)) return BadRequest(new StatusCode400($"uncorrect format {Number}"));
-            else if (!IsDbContext()) return Conflict(new StatusCode409());
-            else if (!IsDbMarks()) return NotFound(new StatusCode404());
-
-            Mark? mark = getMark(markName);
-            Color? color = getColor(colorName);
-            Car car = new Car(Number, VinCode, Model, Volume) { MarkId = mark?.Id ?? 0, _Mark = mark!, ColorId = color?.Id ?? 0, _Color = color! };
-
-            if (!ModelState.IsValid)
-            {
-                BadRequest(new StatusCode400("model is not valid"));
-            }
-
-            _carContext.Cars.Add(car);
-            return isSaveToDb($"{Number} is added to db");
-        }
-
-        [MapToApiVersion("2.0")]
-        [HttpPut(Name = "ModifyCar")]
-        public IActionResult Put([Required] string Number, string? Model, float? Volume,
-            [Required] string markName, [Required] string colorName)
-        {
-            if (!isNumber(Number)) return BadRequest(new StatusCode400($"uncorrect format {Number}"));
-            else if (!IsDbContext()) return Conflict(new StatusCode409());
-            else if (!IsDbMarks()) return NotFound(new StatusCode404());
-
-
-            Car? car = getCar(Number);
-            if (car is null) {
-                return NotFound(new StatusCode404($"no instance by {Number}"));
-            }
-
-            Mark? mark = getMark(markName);
-            Color? color = getColor(colorName);
-
-            if(mark is null || color is null) return BadRequest(new StatusCode400("model of entity is not valid"));
-
-            car!.Model = Model ?? car.Model;
-            car.Volume = Volume ?? car.Volume;
-            car._Mark = mark!;
-            car._Color = color!;
-
-            return isSaveToDb($"{Number} is modified in db");
-        }
-
         [MapToApiVersion("1.0")]
         [HttpDelete(Name = "DeleteCarId")]
+        [ProducesResponseType(typeof(StatusCode200), 200)]
+        [ProducesResponseType(typeof(StatusCode400), 400)]
+        [ProducesResponseType(typeof(StatusCode404), 404)]
+        [ProducesResponseType(typeof(StatusCode409), 409)]
         public IActionResult Delete([Required] string number) {
 
             if (!isNumber(number)) return BadRequest(new StatusCode400($"uncorrect format {number}"));

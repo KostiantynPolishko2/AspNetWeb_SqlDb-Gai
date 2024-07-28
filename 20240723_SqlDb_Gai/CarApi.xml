@@ -24,6 +24,17 @@
             <responce code="404">Failed request: No records in table cars of SqlDb carsdata</responce>
             <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>
+        <member name="M:_20240723_SqlDb_Gai.Controllers.CarController.Delete(System.String)">
+            <summary>
+            Delete from db entity Car by registration Number
+            </summary>
+            <param name="number">Registration Number: AE4000IT</param>
+            <returns></returns>
+            <responce code="200">Successful request fulfillment</responce>
+            <responce code="400">Failed request: Uncorrect format of number inputed</responce>
+            <responce code="404">Failed request: Not found data</responce>
+            <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
+        </member>
         <member name="M:_20240723_SqlDb_Gai.Controllers.CarController.GetCarMarkPaint(System.String)">
             <summary>
             Get IEnumarable&lt;Car> by it mark
@@ -31,6 +42,37 @@
             <param name="Mark">Car Mark: bmw</param>
             <returns></returns>
             <responce code="200">Successful request fulfillment</responce>
+            <responce code="404">Failed request: Not found data</responce>
+            <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
+        </member>
+        <member name="M:_20240723_SqlDb_Gai.Controllers.CarController.Post(System.String,System.String,System.String,System.Single,System.String,System.String)">
+            <summary>
+            Add to db entity Car filled required fields
+            </summary>
+            <param name="Number">Registration Number: AE4000IT</param>
+            <param name="VinCode">Unique code: 5UXWX9C34H0W67034</param>
+            <param name="Model">Name of model</param>
+            <param name="Volume">Engine volume</param>
+            <param name="markName">Name of mark</param>
+            <param name="colorName">Painted color: red</param>
+            <returns></returns>
+            <responce code="200">Successful request fulfillment</responce>
+            <responce code="400">Failed request: Uncorrect format of number inputed</responce>
+            <responce code="404">Failed request: Not found data</responce>
+            <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
+        </member>
+        <member name="M:_20240723_SqlDb_Gai.Controllers.CarController.Put(System.String,System.String,System.Nullable{System.Single},System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="Number">Registration Number: AE4000IT</param>
+            <param name="Model">Name of model</param>
+            <param name="Volume">Engine volume</param>
+            <param name="markName">Name of mark</param>
+            <param name="colorName">Painted color: red</param>
+            <returns></returns>
+            <responce code="200">Successful request fulfillment</responce>
+            <responce code="400">Failed request: Uncorrect format of number inputed</responce>
             <responce code="404">Failed request: Not found data</responce>
             <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>

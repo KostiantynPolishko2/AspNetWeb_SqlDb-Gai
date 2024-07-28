@@ -37,5 +37,11 @@ namespace _20240723_SqlDb_Gai.Models
             this.Model = Model!.ToUpper();
             this.Volume = Volume;
         }
+
+        public Car(Car car, Mark mark, Color color) : this(car.Number, car.VinCode!, car.Model, car.Volume)
+        {
+            this._Mark = mark;
+            this._Color = color;
+        }
     }
 }
