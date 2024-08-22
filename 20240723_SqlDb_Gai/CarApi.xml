@@ -103,6 +103,23 @@
             <responce code="404">Failed request: Not found data</responce>
             <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>
+        <member name="M:_20240723_SqlDb_Gai.Controllers.ColorController.getColorItem(System.String)">
+            <summary>
+            Get ColorItem
+            </summary>
+            <remarks>
+                example of request
+                
+                GET / Todo
+                https://localhost:7133/api/v3/Color/yellow?colorName=yellow%20hues
+                
+            </remarks>
+            <param name="colorName">Color Name from SQL DB</param>
+            <returns></returns>
+            <responce code="200">Successful request fulfillment</responce>
+            <responce code="404">Failed request: Not found data</responce>
+            <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
+        </member>
         <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData6">
             <inheritdoc />
         </member>
