@@ -76,7 +76,7 @@
             <responce code="404">Failed request: Not found data</responce>
             <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>
-        <member name="M:_20240723_SqlDb_Gai.Controllers.MarkColorController.GetMarks">
+        <member name="M:_20240723_SqlDb_Gai.Controllers.v2.MarkController.GetMarks">
             <summary>
             Get list of name marks car from db
             </summary>
@@ -85,74 +85,23 @@
             <responce code="404">Failed request: Not found data</responce>
             <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>
-        <member name="M:_20240723_SqlDb_Gai.Controllers.MarkColorController.GetColors">
+        <member name="M:_20240723_SqlDb_Gai.Controllers.ColorController.getColorItems">
             <summary>
-            Get list of name colors car from db
+            Get IEnumarable&lt;ColorItems>
             </summary>
             <returns></returns>
             <responce code="200">Successful request fulfillment</responce>
             <responce code="404">Failed request: Not found data</responce>
             <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>
-        <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData2">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData2.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData2.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData2.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData3">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData3.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData3.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData3.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData4">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData4.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData4.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData4.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData5">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData5.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData5.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData5.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
+        <member name="M:_20240723_SqlDb_Gai.Controllers.ColorController.getColors">
+            <summary>
+            Get IEnumarable&lt;Colors>
+            </summary>
+            <returns></returns>
+            <responce code="200">Successful request fulfillment</responce>
+            <responce code="404">Failed request: Not found data</responce>
+            <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>
         <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData6">
             <inheritdoc />

@@ -1,8 +1,8 @@
-﻿using _20240723_SqlDb_Gai.Models;
+﻿using _20240723_SqlDb_Gai.Database;
+using _20240723_SqlDb_Gai.Models;
 using _20240723_SqlDb_Gai.Models.Exceptions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
@@ -25,7 +25,7 @@ namespace _20240723_SqlDb_Gai.Controllers
 
         private bool IsDbContext() => _carContext.Database.CanConnect();
         private bool IsDbCars() => _carContext.Cars != null ? true : false;
-        private bool IsDbMarks() => _carContext.Marks != null ? true : false;
+        private bool IsDbMarks() => this._carContext.Marks != null ? true : false;
         private Mark? getMark(string markName) => _carContext.Marks.FirstOrDefault(mark => mark.Name!.Equals(markName.ToLower()));
         private Color? getColor(string colorName) => _carContext.Colors.FirstOrDefault(color => color.Name!.Equals(colorName.ToLower()));
         private Car? getCar(string number) => _carContext.Cars.FirstOrDefault(car => car.Number!.Equals(number.ToUpper()));

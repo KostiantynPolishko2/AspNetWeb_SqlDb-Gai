@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Asp.Versioning;
+using System.ComponentModel.DataAnnotations;
 
 namespace _20240723_SqlDb_Gai.Models
 {
-    //[NotMapped]   
     public class Mark
     {
         [Key]

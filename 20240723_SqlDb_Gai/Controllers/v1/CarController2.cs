@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace _20240723_SqlDb_Gai.Controllers
 {
-    [ApiVersion("2.0")]
+    [ApiVersion("1.0")]
     public partial class CarController : ControllerBase
     {
         /// <summary>
@@ -18,8 +18,8 @@ namespace _20240723_SqlDb_Gai.Controllers
         /// <responce code="200">Successful request fulfillment</responce>
         /// <responce code="404">Failed request: Not found data</responce>
         /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
-        [MapToApiVersion("2.0")]
-        [HttpGet("Mark/{Mark}", Name = "GetByMark")]
+        [MapToApiVersion("1.0")]
+        [HttpGet("Mark/{Mark}", Name = "GetCarMarkPaint")]
         [ProducesResponseType(typeof(IEnumerable<CarMarkPaint>), 200)]
         [ProducesResponseType(typeof(StatusCode404), 404)]
         [ProducesResponseType(typeof(StatusCode409), 409)]
@@ -59,7 +59,7 @@ namespace _20240723_SqlDb_Gai.Controllers
         /// <responce code="400">Failed request: Uncorrect format of number inputed</responce>
         /// <responce code="404">Failed request: Not found data</responce>
         /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
-        [MapToApiVersion("2.0")]
+        [MapToApiVersion("1.0")]
         [HttpPost(Name = "AddCar")]
         [ProducesResponseType(typeof(StatusCode200), 200)]
         [ProducesResponseType(typeof(StatusCode400), 400)]
@@ -98,7 +98,7 @@ namespace _20240723_SqlDb_Gai.Controllers
         /// <responce code="400">Failed request: Uncorrect format of number inputed</responce>
         /// <responce code="404">Failed request: Not found data</responce>
         /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
-        [MapToApiVersion("2.0")]
+        [MapToApiVersion("1.0")]
         [HttpPut(Name = "ModifyCar")]
         [ProducesResponseType(typeof(StatusCode200), 200)]
         [ProducesResponseType(typeof(StatusCode400), 400)]

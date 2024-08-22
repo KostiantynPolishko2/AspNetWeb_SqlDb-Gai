@@ -2,7 +2,7 @@
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
-namespace _20240723_SqlDb_Gai.Filter
+namespace _20240723_SqlDb_Gai.Swagger
 {
     public class SwaggerSkipPropertyFilter : ISchemaFilter
     {

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using _20240723_SqlDb_Gai.Filter;
+using _20240723_SqlDb_Gai.Swagger;
 
 namespace _20240723_SqlDb_Gai.Models.Exceptions
 {

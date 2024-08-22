@@ -1,4 +1,5 @@
-﻿using _20240723_SqlDb_Gai.Filter;
+﻿using _20240723_SqlDb_Gai.Swagger;
+using Asp.Versioning;
 using System.ComponentModel.DataAnnotations;
 
 namespace _20240723_SqlDb_Gai.Models

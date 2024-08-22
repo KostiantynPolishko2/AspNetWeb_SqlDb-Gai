@@ -1,71 +1,75 @@
-﻿using _20240723_SqlDb_Gai.Models;
+﻿using _20240723_SqlDb_Gai.Database;
+using _20240723_SqlDb_Gai.Models;
 using _20240723_SqlDb_Gai.Models.Exceptions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _20240723_SqlDb_Gai.Controllers
 {
-    [ApiVersion("1.0")]
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class MarkColorController : ControllerBase
+    public class ColorController : ControllerBase
     {
         private readonly CarContext carContext;
-        private readonly ILogger<MarkColorController> logger;
+        private readonly ILogger<ColorController> logger;
 
-        public MarkColorController(ILogger<MarkColorController> logger, CarContext carContext)
+        public ColorController(ILogger<ColorController> logger, CarContext carContext)
         {
             this.carContext = carContext;
             this.logger = logger;
         }
 
         private bool IsDbContext() => this.carContext.Database.CanConnect();
-        private bool IsDbMarks() => this.carContext.Marks != null ? true : false;
         private bool IsDbColors() => this.carContext.Colors != null ? true : false;
 
         /// <summary>
-        /// Get list of name marks car from db
+        /// Get IEnumarable&lt;ColorItems>
         /// </summary>
         /// <returns></returns>
         /// <responce code="200">Successful request fulfillment</responce>
         /// <responce code="404">Failed request: Not found data</responce>
         /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
-        [MapToApiVersion("1.0")]
-        [HttpGet("ListMarks", Name = "GetMarks")]
-        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [MapToApiVersion("3.0")]
+        [HttpGet("ColorItems", Name = "GetColorItems")]
+        [ProducesResponseType(typeof(IEnumerable<ColorItem>), 200)]
         [ProducesResponseType(typeof(StatusCode404), 404)]
         [ProducesResponseType(typeof(StatusCode409), 409)]
-        public ActionResult<IEnumerable<string>> GetMarks() {
-            if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
-            else if (!IsDbMarks()) return NotFound(new StatusCode(404, $"no records for marks"));
 
-            List<string> nameMarks = new List<string>() { };
-            carContext.Marks.ToList().ForEach(m => nameMarks.Add(m.Name!));
-            
-            return Ok(nameMarks);
+        public ActionResult<IEnumerable<ColorItem>> getColorItems()
+        {
+            if (!IsDbContext()) return Conflict(new StatusCode409());
+            else if (!IsDbColors()) return NotFound(new StatusCode404());
+
+            IEnumerable<ColorItem> colorItems = (from color in this.carContext.Colors
+                                             select
+                                             new ColorItem() { Name = color.Name, RAL = color.RAL, _Type = color.Type });
+
+            return Ok(colorItems);
         }
 
         /// <summary>
-        /// Get list of name colors car from db
+        /// Get IEnumarable&lt;Colors>
         /// </summary>
         /// <returns></returns>
         /// <responce code="200">Successful request fulfillment</responce>
         /// <responce code="404">Failed request: Not found data</responce>
         /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
-        [MapToApiVersion("1.0")]
-        [HttpGet("ListColors", Name = "GetColors")]
+        [MapToApiVersion("3.0")]
+        [HttpGet("Colors", Name = "GetColors")]
         [ProducesResponseType(typeof(IEnumerable<string>), 200)]
         [ProducesResponseType(typeof(StatusCode404), 404)]
         [ProducesResponseType(typeof(StatusCode409), 409)]
-        public ActionResult<IEnumerable<string>> GetColors()
+
+        public ActionResult<IEnumerable<string>> getColors()
         {
             if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
             else if (!IsDbColors()) return NotFound(new StatusCode(404, $"no records for colors"));
 
-            List<string> nameColors = new List<string>() { };
-            carContext.Colors.ToList().ForEach(c => nameColors.Add(c.Name!));
+            List<string> colors = new List<string>() { };
+            this.carContext.Colors.ToList().ForEach(c => colors.Add(c.Name!));
 
-            return Ok(nameColors);
+            return Ok(colors);
         }
     }
 }

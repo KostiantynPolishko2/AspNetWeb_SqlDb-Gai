@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using _20240723_SqlDb_Gai.Configurations;
+using _20240723_SqlDb_Gai.Models;
 
-namespace _20240723_SqlDb_Gai.Models
+namespace _20240723_SqlDb_Gai.Database
 {
     public class CarContext : DbContext
     {

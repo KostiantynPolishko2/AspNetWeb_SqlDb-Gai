@@ -2,9 +2,8 @@ using Asp.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using _20240723_SqlDb_Gai.Filter;
-using _20240723_SqlDb_Gai.Models;
 using _20240723_SqlDb_Gai.Swagger;
+using _20240723_SqlDb_Gai.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
