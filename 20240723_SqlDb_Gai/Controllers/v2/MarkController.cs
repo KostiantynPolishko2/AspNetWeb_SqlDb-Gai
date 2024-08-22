@@ -2,6 +2,7 @@
 using _20240723_SqlDb_Gai.Models.Exceptions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using _20240723_SqlDb_Gai.Controllers;
 
 namespace _20240723_SqlDb_Gai.Controllers.v2
 {
@@ -19,9 +20,6 @@ namespace _20240723_SqlDb_Gai.Controllers.v2
             this.logger = logger;
         }
 
-        private bool IsDbContext() => carContext.Database.CanConnect();
-        private bool IsDbMarks() => carContext.Marks != null ? true : false;
-
         /// <summary>
         /// Get list of name marks car from db
         /// </summary>
@@ -36,8 +34,8 @@ namespace _20240723_SqlDb_Gai.Controllers.v2
         [ProducesResponseType(typeof(StatusCode409), 409)]
         public ActionResult<IEnumerable<string>> GetMarks()
         {
-            if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
-            else if (!IsDbMarks()) return NotFound(new StatusCode(404, $"no records for marks"));
+            if (!DbVarification.IsDbContext(carContext)) return Conflict(new StatusCode(409, "no connectio db"));
+            else if (!DbVarification.IsDbMarks(carContext)) return NotFound(new StatusCode(404, $"no records for marks"));
 
             List<string> marks = new List<string>() { };
             carContext.Marks.ToList().ForEach(m => marks.Add(m.Name!));

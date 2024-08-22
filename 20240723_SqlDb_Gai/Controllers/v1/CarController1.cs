@@ -13,30 +13,24 @@ namespace _20240723_SqlDb_Gai.Controllers
     [ApiController]
     public partial class CarController : ControllerBase
     {
-        private const string patternNumber = @"^[A-Z]{2}\d{4}[A-Z]{2}$";
-        private readonly CarContext _carContext;
-        private readonly ILogger<CarController> _logger;
+        private readonly CarContext carContext;
+        private readonly ILogger<CarController> logger;
 
         public CarController(ILogger<CarController> logger, CarContext carContext)
         {
-            _carContext = carContext;
-            _logger = logger;
+            this.carContext = carContext;
+            this.logger = logger;
         }
 
-        private bool IsDbContext() => _carContext.Database.CanConnect();
-        private bool IsDbCars() => _carContext.Cars != null ? true : false;
-        private bool IsDbMarks() => this._carContext.Marks != null ? true : false;
-        private Mark? getMark(string markName) => _carContext.Marks.FirstOrDefault(mark => mark.Name!.Equals(markName.ToLower()));
-        private Color? getColor(string colorName) => _carContext.Colors.FirstOrDefault(color => color.Name!.Equals(colorName.ToLower()));
-        private Car? getCar(string number) => _carContext.Cars.FirstOrDefault(car => car.Number!.Equals(number.ToUpper()));
-        private static float getPaintThk(float minThk, float maxThk) => (minThk + maxThk) / 2;
-        private bool isNumber(string number) => Regex.IsMatch(number, patternNumber, RegexOptions.IgnoreCase);
+        private Mark? getMark(string markName) => this.carContext.Marks.FirstOrDefault(mark => mark.Name!.Equals(markName.ToLower()));
+        private Color? getColor(string colorName) => this.carContext.Colors.FirstOrDefault(color => color.Name!.Equals(colorName.ToLower()));
+        private Car? getCar(string number) => this.carContext.Cars.FirstOrDefault(car => car.Number!.Equals(number.ToUpper()));
 
         private IActionResult isSaveToDb(string msg = "db saved")
         {
             try
             {
-                _carContext.SaveChanges();
+                this.carContext.SaveChanges();
                 return Ok(new StatusCode200(msg));
             }
             catch(Exception ex)
@@ -58,10 +52,10 @@ namespace _20240723_SqlDb_Gai.Controllers
         [ProducesResponseType(typeof(StatusCode), 404)]
         [ProducesResponseType(typeof(StatusCode), 409)]
         public ActionResult<IEnumerable<Car>> Get() {
-            if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
-            else if (!IsDbCars()) return NotFound(new StatusCode(404, $"no records for cars"));
+            if (!DbVarification.IsDbContext(carContext)) return Conflict(new StatusCode(409, "no connectio db"));
+            else if (!DbVarification.IsDbCars(carContext)) return NotFound(new StatusCode(404, $"no records for cars"));
 
-            return Ok(_carContext.Cars);
+            return Ok(this.carContext.Cars);
         }
 
         /// <summary>
@@ -80,11 +74,11 @@ namespace _20240723_SqlDb_Gai.Controllers
         [ProducesResponseType(typeof(StatusCode404), 404)]
         [ProducesResponseType(typeof(StatusCode409), 409)]
         public ActionResult<Car> Get([Required] string Number) {
-            if (!isNumber(Number)) return BadRequest(new StatusCode400($"uncorrect format {Number}"));
-            else if (!IsDbContext()) return Conflict(new StatusCode409());
-            else if (!IsDbCars()) return NotFound(new StatusCode404());
+            if (!DbVarification.isNumber(Number)) return BadRequest(new StatusCode400($"uncorrect format {Number}"));
+            else if (!DbVarification.IsDbContext(carContext)) return Conflict(new StatusCode409());
+            else if (!DbVarification.IsDbCars(carContext)) return NotFound(new StatusCode404());
 
-            Car? car = _carContext.Cars.FirstOrDefault(car => car.Number!.Equals(Number.ToUpper()));
+            Car? car = this.carContext.Cars.FirstOrDefault(car => car.Number!.Equals(Number.ToUpper()));
 
             //IEnumerable<Car> cars = (from car in _carContext.Cars.Include(c => c._Mark).Include(c => c._Color)
             //            where car.Number.Equals(Number.ToUpper())
@@ -110,16 +104,16 @@ namespace _20240723_SqlDb_Gai.Controllers
         [ProducesResponseType(typeof(StatusCode409), 409)]
         public IActionResult Delete([Required] string number) {
 
-            if (!isNumber(number)) return BadRequest(new StatusCode400($"uncorrect format {number}"));
-            else if (!IsDbContext()) return Conflict(new StatusCode409());
-            else if (!IsDbCars()) return NotFound(new StatusCode404());
+            if (!DbVarification.isNumber(number)) return BadRequest(new StatusCode400($"uncorrect format {number}"));
+            else if (!DbVarification.IsDbContext(carContext)) return Conflict(new StatusCode409());
+            else if (!DbVarification.IsDbCars(carContext)) return NotFound(new StatusCode404());
 
-            Car? car = _carContext.Cars.FirstOrDefault(x => x.Number.Equals(number.ToUpper()));
+            Car? car = this.carContext.Cars.FirstOrDefault(x => x.Number.Equals(number.ToUpper()));
             if (car == null) {
                 return NotFound(new StatusCode404($"{number} is absent entity in db"));
             }
 
-            _carContext.Cars.Remove(car!);         
+            this.carContext.Cars.Remove(car!);         
             return isSaveToDb($"{number} entity is deleted from db");           
         }
     }

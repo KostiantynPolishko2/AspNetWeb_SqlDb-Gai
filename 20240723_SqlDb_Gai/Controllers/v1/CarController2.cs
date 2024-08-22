@@ -25,17 +25,17 @@ namespace _20240723_SqlDb_Gai.Controllers
         [ProducesResponseType(typeof(StatusCode409), 409)]
         public ActionResult<IEnumerable<CarMarkPaint>> GetCarMarkPaint([Required] string Mark)
         {
-            if (!IsDbContext()) return Conflict(new StatusCode409());
-            else if (!IsDbCars()) return NotFound(new StatusCode404());
+            if (!DbVarification.IsDbContext(carContext)) return Conflict(new StatusCode409());
+            else if (!DbVarification.IsDbCars(carContext)) return NotFound(new StatusCode404());
 
             try
             {
-                IEnumerable<CarMarkPaint> cars = (from car in _carContext.Cars.Include(car => car._Mark).Include(car => car._Color)
+                IEnumerable<CarMarkPaint> cars = (from car in this.carContext.Cars.Include(car => car._Mark).Include(car => car._Color)
                                                   where car._Mark!.Name!.Equals(Mark.ToLower())
                                                   select
                                                   new CarMarkPaint(car.Number!,
                                                       car._Mark!.Name!, car.Model!,
-                                                      getPaintThk(car._Mark.PaintThkMin, car._Mark.PaintThkMax),
+                                                      DbVarification.getPaintThk(car._Mark.PaintThkMin, car._Mark.PaintThkMax),
                                                       car._Color!.RAL,
                                                       car._Color!.Type!));
                 return Ok(cars);
@@ -68,9 +68,9 @@ namespace _20240723_SqlDb_Gai.Controllers
         public IActionResult Post([Required] string Number, [Required] string VinCode, [Required] string Model, [Required] float Volume,
             [Required] string markName, [Required] string colorName)
         {
-            if (!isNumber(Number)) return BadRequest(new StatusCode400($"uncorrect format {Number}"));
-            else if (!IsDbContext()) return Conflict(new StatusCode409());
-            else if (!IsDbMarks()) return NotFound(new StatusCode404());
+            if (!DbVarification.isNumber(Number)) return BadRequest(new StatusCode400($"uncorrect format {Number}"));
+            else if (!DbVarification.IsDbContext(carContext)) return Conflict(new StatusCode409());
+            else if (!DbVarification.IsDbMarks(carContext)) return NotFound(new StatusCode404());
 
             Mark? mark = getMark(markName);
             Color? color = getColor(colorName);
@@ -81,7 +81,7 @@ namespace _20240723_SqlDb_Gai.Controllers
                 BadRequest(new StatusCode400("model is not valid"));
             }
 
-            _carContext.Cars.Add(car);
+            this.carContext.Cars.Add(car);
             return isSaveToDb($"{Number} is added to db");
         }
 
@@ -107,9 +107,9 @@ namespace _20240723_SqlDb_Gai.Controllers
         public IActionResult Put([Required] string Number, string? Model, float? Volume,
             [Required] string markName, [Required] string colorName)
         {
-            if (!isNumber(Number)) return BadRequest(new StatusCode400($"uncorrect format {Number}"));
-            else if (!IsDbContext()) return Conflict(new StatusCode409());
-            else if (!IsDbMarks()) return NotFound(new StatusCode404());
+            if (!DbVarification.isNumber(Number)) return BadRequest(new StatusCode400($"uncorrect format {Number}"));
+            else if (!DbVarification.IsDbContext(carContext)) return Conflict(new StatusCode409());
+            else if (!DbVarification.IsDbMarks(carContext)) return NotFound(new StatusCode404());
 
 
             Car? car = getCar(Number);

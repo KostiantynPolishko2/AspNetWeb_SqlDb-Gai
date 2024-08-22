@@ -20,9 +20,6 @@ namespace _20240723_SqlDb_Gai.Controllers
             this.logger = logger;
         }
 
-        private bool IsDbContext() => this.carContext.Database.CanConnect();
-        private bool IsDbColors() => this.carContext.Colors != null ? true : false;
-
         /// <summary>
         /// Get IEnumarable&lt;ColorItems>
         /// </summary>
@@ -38,8 +35,8 @@ namespace _20240723_SqlDb_Gai.Controllers
 
         public ActionResult<IEnumerable<ColorItem>> getColorItems()
         {
-            if (!IsDbContext()) return Conflict(new StatusCode409());
-            else if (!IsDbColors()) return NotFound(new StatusCode404());
+            if (!DbVarification.IsDbContext(carContext)) return Conflict(new StatusCode409());
+            else if (!DbVarification.IsDbColors(carContext)) return NotFound(new StatusCode404());
 
             IEnumerable<ColorItem> colorItems = (from color in this.carContext.Colors
                                              select
@@ -63,8 +60,8 @@ namespace _20240723_SqlDb_Gai.Controllers
 
         public ActionResult<IEnumerable<string>> getColors()
         {
-            if (!IsDbContext()) return Conflict(new StatusCode(409, "no connectio db"));
-            else if (!IsDbColors()) return NotFound(new StatusCode(404, $"no records for colors"));
+            if (!DbVarification.IsDbContext(carContext)) return Conflict(new StatusCode(409, "no connectio db"));
+            else if (!DbVarification.IsDbColors(carContext)) return NotFound(new StatusCode(404, $"no records for colors"));
 
             List<string> colors = new List<string>() { };
             this.carContext.Colors.ToList().ForEach(c => colors.Add(c.Name!));
