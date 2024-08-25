@@ -105,7 +105,7 @@
         </member>
         <member name="M:_20240723_SqlDb_Gai.Controllers.ColorController.getColorItem(System.String)">
             <summary>
-            Get ColorItem
+            getColorItem([FromQuery] string colorName)
             </summary>
             <remarks>
                 example of request
@@ -114,11 +114,64 @@
                 https://localhost:7133/api/v3/Color/yellow?colorName=yellow%20hues
                 
             </remarks>
-            <param name="colorName">Color Name from SQL DB</param>
+            <param name="colorName">[FromQuery]</param>
             <returns></returns>
             <responce code="200">Successful request fulfillment</responce>
             <responce code="404">Failed request: Not found data</responce>
             <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
+        </member>
+        <member name="M:_20240723_SqlDb_Gai.Controllers.ColorController.addColor(_20240723_SqlDb_Gai.Models.ColorItem)">
+            <summary>
+            post([FromRoute] ColorItem colorItem)
+            </summary>
+            <remarks>
+                example of request
+                
+                POST / Todo
+                https://localhost:7133/api/v3/Color/light%20gray/40/nitro
+                
+            </remarks>
+            <param name="colorItem">[FromRoute]</param>
+            <returns></returns>
+            <responce code="201">Request successful: </responce>
+            <responce code="404">Request failed: Not found data</responce>
+            <responce code="409">Request failed: No connection to SqlDb carsdata</responce>
+        </member>
+        <member name="M:_20240723_SqlDb_Gai.Controllers.ColorController.UpdateColor(System.String,_20240723_SqlDb_Gai.Models.ColorItem)">
+            <summary>
+            put([FromBody] ColorItem colorItem)
+            </summary>
+            <remarks>
+                example of request
+                
+                POST / Todo
+                https://localhost:7133/api/v3/Color/yellow/
+                
+            </remarks>
+            <param name="name">[FromQuery]</param>
+            <param name="colorItem">[FromBody]</param>
+            <returns></returns>
+            <responce code="201">Request successful: </responce>
+            <responce code="404">Request failed: Not found data</responce>
+            <responce code="409">Request failed: No connection to SqlDb carsdata</responce>
+        </member>
+        <member name="M:_20240723_SqlDb_Gai.Controllers.ColorController.UpdateColorPatch(System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{_20240723_SqlDb_Gai.Models.ColorItem})">
+            <summary>
+            put([FromBody] ColorItem colorItem)
+            </summary>
+            <remarks>
+                example of request
+                
+                POST / Todo
+                https://localhost:7133/api/v3/Color/yellow/
+                
+            </remarks>
+            <param name="name">[FromQuery]</param>
+            <param name="patchColorItem">[FromBody]</param>
+            <returns></returns>
+            <responce code="201">Request successful: </responce>
+            <responce code="404">Request failed: Not found data</responce>
+            <responce code="409">Request failed: No connection to SqlDb carsdata</responce>
         </member>
         <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData6">
             <inheritdoc />
@@ -154,6 +207,18 @@
             <inheritdoc />
         </member>
         <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData8.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData9">
+            <inheritdoc />
+        </member>
+        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData9.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData9.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:_20240723_SqlDb_Gai.Migrations.InitialCarsData9.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:_20240723_SqlDb_Gai.Models.Car">

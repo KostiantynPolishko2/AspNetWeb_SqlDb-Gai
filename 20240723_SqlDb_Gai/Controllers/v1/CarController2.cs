@@ -78,11 +78,11 @@ namespace _20240723_SqlDb_Gai.Controllers
 
             if (!ModelState.IsValid)
             {
-                BadRequest(new StatusCode400("model is not valid"));
+                BadRequest(new StatusCode400("instance is not valid"));
             }
 
             this.carContext.Cars.Add(car);
-            return isSaveToDb($"{Number} is added to db");
+            return Ok(DbVarification.isSaveToDb(this.carContext, $"{Number} is added to db"));
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace _20240723_SqlDb_Gai.Controllers
             car._Mark = mark!;
             car._Color = color!;
 
-            return isSaveToDb($"{Number} is modified in db");
+            return Ok(DbVarification.isSaveToDb(this.carContext, $"{Number} is modified in db"));
         }
     }
 }

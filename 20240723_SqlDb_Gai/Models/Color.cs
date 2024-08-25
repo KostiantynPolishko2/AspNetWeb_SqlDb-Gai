@@ -13,8 +13,9 @@ namespace _20240723_SqlDb_Gai.Models
         public string Name { get; private set; } = null!;
         public int RAL {  get; private set; }
         public string Type { get; private set; } = null!;
+
         [SwaggerIgnore]
         [NotMapped]
-        public List<Car> Cars { get; private set; } = new();
+        public List<Car>? Cars { get; private set; } = new();
     }
 }

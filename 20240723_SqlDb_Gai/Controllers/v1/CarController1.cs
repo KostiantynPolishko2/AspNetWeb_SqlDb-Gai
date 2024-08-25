@@ -26,19 +26,6 @@ namespace _20240723_SqlDb_Gai.Controllers
         private Color? getColor(string colorName) => this.carContext.Colors.FirstOrDefault(color => color.Name!.Equals(colorName.ToLower()));
         private Car? getCar(string number) => this.carContext.Cars.FirstOrDefault(car => car.Number!.Equals(number.ToUpper()));
 
-        private IActionResult isSaveToDb(string msg = "db saved")
-        {
-            try
-            {
-                this.carContext.SaveChanges();
-                return Ok(new StatusCode200(msg));
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new StatusCode400($"{ex.InnerException!.Message.ToString()}"));
-            }
-        }
-
         /// <summary>
         /// Get &lt;Cars> from db
         /// </summary>
@@ -114,7 +101,7 @@ namespace _20240723_SqlDb_Gai.Controllers
             }
 
             this.carContext.Cars.Remove(car!);         
-            return isSaveToDb($"{number} entity is deleted from db");           
+            return Ok(DbVarification.isSaveToDb(this.carContext, $"{number} entity is deleted from db"));           
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using _20240723_SqlDb_Gai.Database;
-using Microsoft.IdentityModel.Tokens;
+using _20240723_SqlDb_Gai.Models.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
+
 
 namespace _20240723_SqlDb_Gai.Controllers
 {
@@ -12,11 +14,24 @@ namespace _20240723_SqlDb_Gai.Controllers
         public static bool IsDbCars(CarContext carContext) => carContext.Cars != null ? true : false;
 
         public static bool IsDbMarks(CarContext carContext) => carContext.Marks != null ? true : false;
-
         public static bool IsDbColors(CarContext carContext) => carContext.Colors != null ? true : false;
+        public static bool IsDbColorItems(CarContext carContext) => carContext.ColorItems != null ? true : false;
 
         public static float getPaintThk(float minThk, float maxThk) => (minThk + maxThk) / 2;
 
         public static bool isNumber(string number) => Regex.IsMatch(number, patternNumber, RegexOptions.IgnoreCase);
+
+        public static StatusCode isSaveToDb(CarContext carContext, string msg = "db saved")
+        {
+            try
+            {
+                carContext.SaveChanges();
+                return new StatusCode201(msg);
+            }
+            catch (Exception ex)
+            {
+                return new StatusCode400($"{ex.InnerException!.Message.ToString()}");
+            }
+        }
     }
 }
