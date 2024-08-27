@@ -4,12 +4,15 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using _20240723_SqlDb_Gai.Swagger;
 using _20240723_SqlDb_Gai.Database;
+using Microsoft.Extensions.DependencyInjection;
+using _20240723_SqlDb_Gai.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<CarContext>(configure => configure.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDbConnection")));
 builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddScoped<IColorItemRepository, ColorItemRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

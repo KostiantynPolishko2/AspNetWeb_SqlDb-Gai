@@ -9,5 +9,14 @@ namespace _20240723_SqlDb_Gai.Models
         public string name { get; set; } = null!;
         public int ral {  get; set; }
         public string? type { get; set; }
+
+        public ColorItem() { }
+
+        public ColorItem(Color color)
+        {
+            this.name = color.Name;
+            this.ral = color.RAL;
+            this.type = color.Type;
+        }
     }
 }

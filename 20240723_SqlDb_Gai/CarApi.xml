@@ -85,15 +85,6 @@
             <responce code="404">Failed request: Not found data</responce>
             <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>
-        <member name="M:_20240723_SqlDb_Gai.Controllers.ColorController.getColorItems">
-            <summary>
-            Get IEnumarable&lt;ColorItems>
-            </summary>
-            <returns></returns>
-            <responce code="200">Successful request fulfillment</responce>
-            <responce code="404">Failed request: Not found data</responce>
-            <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
-        </member>
         <member name="M:_20240723_SqlDb_Gai.Controllers.ColorController.getColors">
             <summary>
             Get IEnumarable&lt;Colors>
@@ -172,6 +163,15 @@
             <responce code="201">Request successful: </responce>
             <responce code="404">Request failed: Not found data</responce>
             <responce code="409">Request failed: No connection to SqlDb carsdata</responce>
+        </member>
+        <member name="M:_20240723_SqlDb_Gai.Controllers.v4.ColorItemController.getColorItems">
+            <summary>
+            Get IEnumarable&lt;ColorItems>
+            </summary>
+            <returns></returns>
+            <responce code="200">Successful request fulfillment</responce>
+            <responce code="404">Failed request: Not found data</responce>
+            <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
         </member>
         <member name="T:_20240723_SqlDb_Gai.Migrations.InitialCarsData6">
             <inheritdoc />

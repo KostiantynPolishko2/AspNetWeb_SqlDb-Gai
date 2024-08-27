@@ -2,10 +2,8 @@
 using _20240723_SqlDb_Gai.Models;
 using _20240723_SqlDb_Gai.Models.Exceptions;
 using Asp.Versioning;
-using Azure;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace _20240723_SqlDb_Gai.Controllers
 {
@@ -16,7 +14,6 @@ namespace _20240723_SqlDb_Gai.Controllers
     {
         private readonly CarContext carContext;
         private readonly ILogger<ColorController> logger;
-        private const string color = "yellow";
 
         public ColorController(ILogger<ColorController> logger, CarContext carContext)
         {
@@ -25,31 +22,6 @@ namespace _20240723_SqlDb_Gai.Controllers
         }
 
         private ColorItem? _getColorItem(string name) => this.carContext.ColorItems.FirstOrDefault(colorItem => colorItem.name.Equals(name.ToLower()));
-
-        /// <summary>
-        /// Get IEnumarable&lt;ColorItems>
-        /// </summary>
-        /// <returns></returns>
-        /// <responce code="200">Successful request fulfillment</responce>
-        /// <responce code="404">Failed request: Not found data</responce>
-        /// <responce code="409">Failed request: No connection to SqlDb carsdata</responce>
-        [MapToApiVersion("3.0")]
-        [HttpGet("ColorItems", Name = "GetColorItems")]
-        [ProducesResponseType(typeof(IEnumerable<ColorItem>), 200)]
-        [ProducesResponseType(typeof(StatusCode404), 404)]
-        [ProducesResponseType(typeof(StatusCode409), 409)]
-
-        public ActionResult<IEnumerable<ColorItem>> getColorItems()
-        {
-            if (!DbVarification.IsDbContext(carContext)) return Conflict(new StatusCode409());
-            else if (!DbVarification.IsDbColors(carContext)) return NotFound(new StatusCode404());
-
-            IEnumerable<ColorItem> colorItems = (from color in this.carContext.Colors
-                                             select
-                                             new ColorItem() { name = color.Name, ral = color.RAL, type = color.Type });
-
-            return Ok(colorItems);
-        }
 
         /// <summary>
         /// Get IEnumarable&lt;Colors>
