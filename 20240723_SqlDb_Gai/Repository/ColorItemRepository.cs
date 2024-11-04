@@ -11,7 +11,6 @@ namespace _20240723_SqlDb_Gai.Repository
             this.context = context;
         }
 
-        public CarContext getContext() => context;
         public IEnumerable<ColorItem> getAllColorItems() => context.Colors.Select(x => new ColorItem(x));
     }
 }

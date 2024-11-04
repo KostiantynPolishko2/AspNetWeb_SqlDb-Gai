@@ -9,6 +9,7 @@ namespace _20240723_SqlDb_Gai.Database
         public DbSet<Mark> Marks { get; set; } = null!;
         public DbSet<Color> Colors { get; set; } = null!;
         public DbSet<ColorItem> ColorItems { get; set; } = null!;
+		
         public CarContext(DbContextOptions<CarContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
